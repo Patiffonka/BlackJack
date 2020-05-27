@@ -8,6 +8,7 @@
  */
 
 #include <iostream>
+#include <vector>
 #define UP true
 #define DOWN false
 
@@ -24,17 +25,40 @@ public:
     int GetValue() const {
         return static_cast<int>(rank);
     }
+    cardRank getRank(){return rank;}
 private:
     cardRank rank;
     cardSuit suit;
     bool faceup;
 };
 
+class Hand {
+public:                                                   //temporary public
+    vector<Card*> hand;
+public:
+    void add(Card* c) {hand.push_back(c);}
+    void clear(){hand.clear();}
+    unsigned int size() const {return hand.size();}
+    int getValue() const{
+        int sum=0;
+        for (unsigned int i = 0; i < hand.size(); i++){
+            if (hand.at(i)->getRank() == Card::ACE && ((sum+11)<21)) sum+=11;
+            else sum+=static_cast<int>(hand.at(i)->GetValue());
+        }
+        return sum;
+    }
+};
+
 int main()
 {
-    Card threeHeart(Card::THREE, Card::HEART, UP);
-    cout<<threeHeart.GetValue()<<endl;
-
-    Card aceSpade(Card::ACE, Card::SPADE, DOWN);
-    cout<<aceSpade.GetValue()<<endl;
+    Hand *hand = new Hand;
+    Card *ACECLUB = new Card(Card::ACE, Card::CLUB, DOWN);
+    Card *TWODIAMOND = new Card(Card::TWO, Card::DIAMOND, DOWN);
+    Card *JACKSPADE = new Card(Card::JACK, Card::SPADE, DOWN);
+    hand->add(ACECLUB);
+    hand->add(TWODIAMOND);
+    hand->add(JACKSPADE);
+    for (int i = 0; i < hand->size(); i++)
+         cout << hand->hand.at(i)->getRank() << endl;
+    cout << "sum: " << hand->getValue() << endl;
 }
