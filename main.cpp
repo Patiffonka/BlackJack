@@ -33,19 +33,27 @@ private:
 };
 
 class Hand {
-public:                                                   //temporary public
+private:
     vector<Card*> hand;
 public:
     void add(Card* c) {hand.push_back(c);}
-    void clear(){hand.clear();}
+    void clear(){
+        for (unsigned int i = 0; i < hand.size(); ++i) delete hand[i];
+        hand.clear();
+        }
     unsigned int size() const {return hand.size();}
     int getValue() const{
         int sum=0;
-        for (unsigned int i = 0; i < hand.size(); i++){
+        for (unsigned int i = 0; i < hand.size(); ++i){
             if (hand.at(i)->getRank() == Card::ACE && ((sum+11)<21)) sum+=11;
             else sum+=static_cast<int>(hand.at(i)->GetValue());
         }
         return sum;
+    }
+    void print() {
+        for (int i = 0; i < hand.size(); ++i)
+             cout << hand.at(i)->getRank() << endl;
+        cout << "sum: " << getValue() << endl;
     }
 };
 
@@ -58,7 +66,5 @@ int main()
     hand->add(ACECLUB);
     hand->add(TWODIAMOND);
     hand->add(JACKSPADE);
-    for (int i = 0; i < hand->size(); i++)
-         cout << hand->hand.at(i)->getRank() << endl;
-    cout << "sum: " << hand->getValue() << endl;
+    hand->print();
 }
