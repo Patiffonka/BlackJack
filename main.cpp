@@ -80,10 +80,12 @@ int main()
     Card *ACECLUB = new Card(Card::ACE, Card::CLUB, DOWN);
     Card *TWODIAMOND = new Card(Card::TWO, Card::DIAMOND, DOWN);
     Card *JACKSPADE = new Card(Card::JACK, Card::SPADE, DOWN);
+    Card *ACEDIAMOND = new Card(Card::ACE, Card::DIAMOND, DOWN);
     player->add(ACECLUB);
     player->add(TWODIAMOND);
     player->add(JACKSPADE);
+    player->add(ACEDIAMOND);
     player->print();
-    player->IsBoosted();
-    player->Bust();
+    if (player->IsBoosted()) player->Bust();
+
 }
