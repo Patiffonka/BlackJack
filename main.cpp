@@ -9,6 +9,7 @@
 
 #include <iostream>
 #include <vector>
+#include <string>
 #define UP true
 #define DOWN false
 
@@ -51,20 +52,38 @@ public:
         return sum;
     }
     void print() {
-        for (int i = 0; i < hand.size(); ++i)
+        for (unsigned int i = 0; i < hand.size(); ++i)
              cout << hand.at(i)->getRank() << endl;
         cout << "sum: " << getValue() << endl;
     }
 };
 
+class GenericPlayer: public Hand {
+private:
+    string name;
+public:
+    GenericPlayer(string n) : Hand(), name(n){}
+    virtual ~GenericPlayer(){}
+    virtual bool isHitting(){return true;}                          //???
+    bool IsBoosted(){
+        if (getValue()>21) return true;
+        else return false;
+    }
+    void Bust(){
+        cout << "Player " << name << ": Bust!" << endl;
+    }
+};
+
 int main()
 {
-    Hand *hand = new Hand;
+    GenericPlayer *player = new GenericPlayer("Vasyan");
     Card *ACECLUB = new Card(Card::ACE, Card::CLUB, DOWN);
     Card *TWODIAMOND = new Card(Card::TWO, Card::DIAMOND, DOWN);
     Card *JACKSPADE = new Card(Card::JACK, Card::SPADE, DOWN);
-    hand->add(ACECLUB);
-    hand->add(TWODIAMOND);
-    hand->add(JACKSPADE);
-    hand->print();
+    player->add(ACECLUB);
+    player->add(TWODIAMOND);
+    player->add(JACKSPADE);
+    player->print();
+    player->IsBoosted();
+    player->Bust();
 }
