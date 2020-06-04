@@ -163,16 +163,18 @@ public:
 
 int main()
 {
-    Card *KINGDIAMOND = new Card(Card::KING, Card::DIAMOND, UP);
-    Card *ACEHEART = new Card(Card::ACE, Card::HEART, UP);
-    Card *TWOSPADE = new Card(Card::TWO, Card::SPADE, UP);
-    Card *EIGHTCLUB = new Card(Card::EIGHT, Card::CLUB, UP);
-    cout << *TWOSPADE << endl;
-    GenericPlayer *VASYAN = new GenericPlayer("Vasyan");
-    TWOSPADE->Flip();
-    VASYAN->add(KINGDIAMOND);
-    VASYAN->add(ACEHEART);
-    VASYAN->add(TWOSPADE);
-    VASYAN->add(EIGHTCLUB);
-    cout << *VASYAN << endl;
+    Card KINGDIAMOND(Card::KING, Card::DIAMOND, UP);
+    Card ACEHEART(Card::ACE, Card::HEART, UP);
+    Card TWOSPADE(Card::TWO, Card::SPADE, UP);
+    Card EIGHTCLUB(Card::EIGHT, Card::CLUB, UP);
+    cout << TWOSPADE << endl;
+    GenericPlayer VASYAN("Vasyan");
+    TWOSPADE.Flip();
+    VASYAN.add(&KINGDIAMOND);
+    VASYAN.add(&ACEHEART);
+    VASYAN.add(&TWOSPADE);
+    VASYAN.add(&EIGHTCLUB);
+    cout << VASYAN << endl;
+    GenericPlayer SERYOGA("Seryoga");
+    SERYOGA.add(&KINGDIAMOND);
 }
