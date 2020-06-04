@@ -67,7 +67,7 @@ ostream& operator<<(ostream& out, const Card &date){
     }
     out << "| " << flush;
     }
-    else cout << "|XXXX| " << flush;
+    else out << "|XXXX| " << flush;
     return out;
 }
 
