@@ -10,6 +10,8 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <algorithm>
+#include <time.h>
 #define UP true
 #define DOWN false
 
@@ -99,6 +101,8 @@ public:
     vector<Card*> getHand() const {return hand;}
 };
 
+
+
 class GenericPlayer: public Hand {
 private:
     string name;
@@ -161,20 +165,149 @@ public:
     }
 };
 
+class Deck: public Hand {
+public:
+    Deck(){
+        getHand().reserve(52);
+        populate();
+    }
+
+    void populate(){
+        clear();
+        for (int i = Card::ACE; i <= Card::KING; ++i){
+            for (int j = Card::HEART; j<= Card::SPADE; ++j){
+                add(new Card(static_cast<Card::cardRank>(i),
+                             static_cast<Card::cardSuit>(j),
+                             DOWN));
+            }
+        }
+    }
+
+    void Shuffle(){
+//        random_shuffle(getHand().begin(), getHand().end());
+    }
+
+    void Deal(Hand& ahand){
+
+        if (!getHand().empty()){
+            ahand.add(getHand().back());
+            getHand().pop_back();
+        }
+        else cout << "Out of cards." << endl;
+
+    }
+
+    void additionalCards(GenericPlayer& aGenerlcPlayer) {
+        while (!(aGenerlcPlayer.IsBoosted()) && aGenerlcPlayer.isHitting())
+        {
+            Deal(aGenerlcPlayer);
+            cout << aGenerlcPlayer << endl;
+
+            if (aGenerlcPlayer.IsBoosted()) aGenerlcPlayer.Bust();
+        }
+    }
+};
+
+class Game
+{
+public:
+    Deck m_Deck;
+    House m_House;
+    vector<Player> m_Players;
+public:
+    Game(const vector<string>& names){
+        vector<string>::const_iterator pName;
+        for (pName = names.begin(); pName != names.end(); ++pName) m_Players.push_back(Player(*pName));
+        srand(static_cast<unsigned int>(time(0)));
+        m_Deck.populate();
+        //m_Deck.Shuffle();
+    }
+
+    void Play(){
+        vector<Player>::iterator pPlayer;
+        for (int i = 0; i < 2; ++i)
+        {
+            for (pPlayer = m_Players.begin(); pPlayer!= m_Players.end(); ++ pPlayer) m_Deck.Deal(*pPlayer);
+        m_Deck.Deal(m_House);
+        }
+
+        m_House.FlipFirstCard();
+
+        for (pPlayer = m_Players.begin(); pPlayer != m_Players.end(); ++pPlayer)
+        {
+            cout << *pPlayer << endl;
+        }
+        cout << m_House << endl;
+
+        for (pPlayer = m_Players.begin(); pPlayer != m_Players.end(); ++pPlayer)
+        {
+            m_Deck.additionalCards(*pPlayer);
+        }
+
+        m_House.FlipFirstCard();
+        cout << endl << m_House;
+        m_Deck.additionalCards(m_House);
+
+        if (m_House.IsBoosted())
+            {
+                for (pPlayer = m_Players.begin(); pPlayer != m_Players.end(); ++pPlayer)
+                {
+                    if (!(pPlayer->IsBoosted()))
+                    {
+                        pPlayer->win();
+                    }
+                }
+            }
+        else
+            {
+                for (pPlayer = m_Players.begin(); pPlayer != m_Players.end();
+                     ++pPlayer)
+                {
+                    if (!(pPlayer->IsBoosted()))
+                    {
+                        if (pPlayer->getValue() > m_House.getValue())
+                        {
+                            pPlayer->win();
+                        }
+                        else if (pPlayer->getValue() < m_House.getValue())
+                        {
+                            pPlayer->lose();
+                        }
+                        else
+                        {
+                            pPlayer->push();
+                        }
+                    }
+                }
+            }
+
+        for (pPlayer = m_Players.begin(); pPlayer != m_Players.end(); ++pPlayer)
+        {
+            pPlayer->clear();
+        }
+        m_House.clear();
+    }
+};
+
+
+
+
 int main()
 {
-    Card KINGDIAMOND(Card::KING, Card::DIAMOND, UP);
-    Card ACEHEART(Card::ACE, Card::HEART, UP);
-    Card TWOSPADE(Card::TWO, Card::SPADE, UP);
-    Card EIGHTCLUB(Card::EIGHT, Card::CLUB, UP);
-    cout << TWOSPADE << endl;
-    GenericPlayer VASYAN("Vasyan");
-    TWOSPADE.Flip();
-    VASYAN.add(&KINGDIAMOND);
-    VASYAN.add(&ACEHEART);
-    VASYAN.add(&TWOSPADE);
-    VASYAN.add(&EIGHTCLUB);
-    cout << VASYAN << endl;
-    GenericPlayer SERYOGA("Seryoga");
-    SERYOGA.add(&KINGDIAMOND);
+    vector<string>names;
+//    string name;
+//    int playerCount = 1;
+//    while (name != "0") {
+//        cout << "Enter player " << playerCount << " name (0 for exit): ";
+//        cin >> name;
+//        names.push_back(name);
+//        ++playerCount;
+//    }
+    names.push_back("Vasya");
+    names.push_back("Petya");
+    names.push_back("Igor");
+
+    Game *myGame = new Game(names);
+    myGame->Play();
+
 }
